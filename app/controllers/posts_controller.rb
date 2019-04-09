@@ -1,10 +1,11 @@
 class PostsController < ApplicationController
+  before_action :this_post, only: [:edit, :update, :show]
+
   def index
   	@posts = Post.all
   end
 
   def show
-  	@post = Post.find(params[:id])
   end
 
   def new
@@ -12,18 +13,27 @@ class PostsController < ApplicationController
   end
 
   def create
-    @post = Post.new(params)
+    @post = Post.new(post_params)
     @post.save
     redirect_to post_path(@post)
   end
 
   def update
-    @post = Post.find(params[:id])
-    @post.update(params.require(:post))
+    @post.update(post_params)
     redirect_to post_path(@post)
   end
 
   def edit
+  end
+
+  private
+
+  def this_post
     @post = Post.find(params[:id])
   end
+
+  def post_params
+    params.require(:post).permit(:title, :description)
+  end
+
 end
